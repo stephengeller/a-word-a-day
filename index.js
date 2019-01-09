@@ -53,7 +53,7 @@ function getDateAndTime() {
   return `${date} ${time}`;
 }
 
-function createWordDefinitonTweet() {
+function createWordDefinitionTweet() {
   const newsTitle = getRandomNewsTitle();
   const randomWord = getRandomWord(newsTitle);
   return getDefinition(randomWord);
@@ -61,6 +61,6 @@ function createWordDefinitonTweet() {
 
 exports.handler = function(event, context, callback) {
   const dateAndTime = getDateAndTime();
-  const wordDefinition = createWordDefinitonTweet();
+  const wordDefinition = createWordDefinitionTweet();
   postToTwitter(wordDefinition, dateAndTime);
 };
