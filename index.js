@@ -16,7 +16,7 @@ const bot = new Twit({
     timeout_ms: 60 * 1000
 });
 
-const postToTwitter = message => {
+const postToTwitter = (message, dateAndTime) => {
     return bot.post("statuses/update", { status: message }, (err, data) => {
         if (err) {
             console.log(err);
@@ -33,5 +33,6 @@ exports.handler = function(event, context, callback) {
     const time = d.toLocaleTimeString();
     const date = d.toLocaleDateString();
     const dateAndTime = `${date} ${time}`;
-    postToTwitter("it is currently: " + dateAndTime)
+    const string = "it is currently: " + dateAndTime;
+    postToTwitter(string, dateAndTime)
 };
