@@ -46,13 +46,21 @@ const postToTwitter = (message, dateAndTime) => {
   );
 };
 
-exports.handler = function(event, context, callback) {
+function getDateAndTime() {
   const d = new Date();
   const time = d.toLocaleTimeString();
   const date = d.toLocaleDateString();
-  const dateAndTime = `${date} ${time}`;
+  return `${date} ${time}`;
+}
+
+function createWordDefinitonTweet() {
   const newsTitle = getRandomNewsTitle();
   const randomWord = getRandomWord(newsTitle);
-  const wordDefinition = getDefinition(randomWord);
+  return getDefinition(randomWord);
+}
+
+exports.handler = function(event, context, callback) {
+  const dateAndTime = getDateAndTime();
+  const wordDefinition = createWordDefinitonTweet();
   postToTwitter(wordDefinition, dateAndTime);
 };
