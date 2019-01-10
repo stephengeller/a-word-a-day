@@ -23,8 +23,6 @@ function createTwitClient() {
 }
 
 const postToTwitter = (message, dateAndTime, client) => {
-  console.log(message);
-  process.exit(1);
   return client.post("statuses/update", { status: message }, (err, data) => {
     if (err) {
       console.log(err);
