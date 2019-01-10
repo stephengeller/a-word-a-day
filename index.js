@@ -8,13 +8,15 @@ const {
   TWITTER_ACCESS_TOKEN_SECRET
 } = process.env;
 
-const bot = new Twit({
-  consumer_key: TWITTER_CONSUMER_KEY,
-  consumer_secret: TWITTER_CONSUMER_SECRET,
-  access_token: TWITTER_ACCESS_TOKEN,
-  access_token_secret: TWITTER_ACCESS_TOKEN_SECRET,
-  timeout_ms: 60 * 1000
-});
+function createTwitClient() {
+  return new Twit({
+    consumer_key: TWITTER_CONSUMER_KEY,
+    consumer_secret: TWITTER_CONSUMER_SECRET,
+    access_token: TWITTER_ACCESS_TOKEN,
+    access_token_secret: TWITTER_ACCESS_TOKEN_SECRET,
+    timeout_ms: 60 * 1000
+  });
+}
 
 function getRandomNewsTitle() {
   return "some random news title";
@@ -29,8 +31,8 @@ function getDefinition(string) {
   return `Definition of ${string}: ""`;
 }
 
-const postToTwitter = (message, dateAndTime) => {
-  return bot.post(
+const postToTwitter = (message, dateAndTime, client) => {
+  return client.post(
     "statuses/update",
     { status: message + " at " + dateAndTime },
     (err, data) => {
@@ -59,8 +61,13 @@ function createWordDefinitionTweet() {
   return getDefinition(randomWord);
 }
 
-exports.handler = function(event, context, callback) {
+exports.handler = function(
+  event,
+  context,
+  callback,
+  client = createTwitClient()
+) {
   const dateAndTime = getDateAndTime();
   const wordDefinition = createWordDefinitionTweet();
-  postToTwitter(wordDefinition, dateAndTime);
+  postToTwitter(wordDefinition, dateAndTime, client);
 };
