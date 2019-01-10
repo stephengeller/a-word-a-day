@@ -1,13 +1,18 @@
+require("dotenv").config();
 const apiKey = process.env.NEWS_API_KEY;
+
+const NewsAPI = require("newsapi");
 const newsapi = new NewsAPI(apiKey);
 
-async function getNewsArticles() {
-  await newsapi.v2
+function getNewsArticles(callback) {
+  return newsapi.v2
     .topHeadlines({ country: "gb" })
     .then(res => {
-      return res;
+      return callback(res["articles"]);
     })
     .catch(err => {
-      res.send({ response: false, err: err });
+      throw new Error(err);
     });
 }
+
+module.exports = getNewsArticles;

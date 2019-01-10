@@ -1,5 +1,7 @@
 const Twit = require("twit");
 require("dotenv").config();
+const getNewsArticles = require("./newsApi");
+const { createWordDefinitionTweet } = require("./articleFunctions");
 
 const {
   TWITTER_CONSUMER_KEY,
@@ -18,19 +20,6 @@ function createTwitClient() {
   });
 }
 
-function getRandomNewsTitle() {
-  return "some random news title";
-}
-
-function getRandomWord(string) {
-  const wordArr = string.split(" ");
-  return wordArr[Math.floor(Math.random() * wordArr.length)];
-}
-
-function getDefinition(string) {
-  return `Definition of ${string}: ""`;
-}
-
 const postToTwitter = (message, dateAndTime, client) => {
   return client.post(
     "statuses/update",
@@ -40,7 +29,7 @@ const postToTwitter = (message, dateAndTime, client) => {
         console.log(err);
       } else {
         const notice =
-          dateAndTime + ": **** " + `"${data.text}"` + " was tweeted ****";
+          dateAndTime + ": **** " + `"${data.text}"` + " **** was tweeted.";
         console.log(notice);
         return notice;
       }
@@ -55,19 +44,17 @@ function getDateAndTime() {
   return `${date} ${time}`;
 }
 
-function createWordDefinitionTweet() {
-  const newsTitle = getRandomNewsTitle();
-  const randomWord = getRandomWord(newsTitle);
-  return getDefinition(randomWord);
-}
-
-exports.handler = function(
+exports.handler = async function(
   event,
   context,
   callback,
   client = createTwitClient()
 ) {
-  const dateAndTime = getDateAndTime();
-  const wordDefinition = createWordDefinitionTweet();
-  postToTwitter(wordDefinition, dateAndTime, client);
+  await getNewsArticles(articles => {
+    const dateAndTime = getDateAndTime();
+    createWordDefinitionTweet(articles).then(({ word, definition }) => {
+      const tweetString = `The definiton of [${word}] is: ${definition}`;
+      postToTwitter(tweetString, dateAndTime, client);
+    });
+  });
 };
