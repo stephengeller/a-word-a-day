@@ -3,3 +3,5 @@ node_modules
 .idea/
 a-word-a-day.zip
 learn-a-word-zipped.zip
+output.txt
+.DS_Store

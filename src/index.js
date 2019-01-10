@@ -35,7 +35,8 @@ const postToTwitter = (message, dateAndTime, client) => {
 function notice(dateAndTime, data) {
   const notice =
     dateAndTime + ": **** " + `"${data.text}"` + " **** was tweeted.";
-  return console.log(notice);
+  console.log(notice);
+  return notice;
 }
 
 function getDateAndTime() {
