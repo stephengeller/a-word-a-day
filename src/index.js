@@ -3,6 +3,8 @@ require("dotenv").config();
 const getNewsArticles = require("./newsApi");
 const { createWordDefinitionTweet } = require("./articleFunctions");
 
+const MAX_TWEET_LENGTH = 280;
+
 const {
   TWITTER_CONSUMER_KEY,
   TWITTER_CONSUMER_SECRET,
@@ -21,20 +23,16 @@ function createTwitClient() {
 }
 
 const postToTwitter = (message, dateAndTime, client) => {
-  return client.post(
-    "statuses/update",
-    { status: message + " at " + dateAndTime },
-    (err, data) => {
-      if (err) {
-        console.log(err);
-      } else {
-        const notice =
-          dateAndTime + ": **** " + `"${data.text}"` + " **** was tweeted.";
-        console.log(notice);
-        return notice;
-      }
+  return client.post("statuses/update", { status: message }, (err, data) => {
+    if (err) {
+      console.log(err);
+    } else {
+      const notice =
+        dateAndTime + ": **** " + `"${data.text}"` + " **** was tweeted.";
+      console.log(notice);
+      return notice;
     }
-  );
+  });
 };
 
 function getDateAndTime() {
@@ -53,7 +51,10 @@ exports.handler = async function(
   await getNewsArticles(articles => {
     const dateAndTime = getDateAndTime();
     createWordDefinitionTweet(articles).then(({ word, definition }) => {
-      const tweetString = `The definiton of [${word}] is: ${definition}`;
+      let tweetString = `The definiton of [${word}] is: ${definition}`;
+      if (tweetString >= MAX_TWEET_LENGTH) {
+        tweetString = word.substring(0, MAX_TWEET_LENGTH - 5) + "...";
+      }
       postToTwitter(tweetString, dateAndTime, client);
     });
   });

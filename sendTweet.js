@@ -1,3 +1,1 @@
-const index = require("./index");
-
-index.handler("some_event", "some_contxt", "some_cb");
+require("./src/index").handler();
