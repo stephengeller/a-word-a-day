@@ -8,12 +8,16 @@ cd a-word-a-day
 touch .env
 ```
 Then, populate the .env file with:
-- TWITTER_CONSUMER_KEY
-- TWITTER_CONSUMER_SECRET
-- TWITTER_ACCESS_TOKEN
-- TWITTER_ACCESS_TOKEN_SECRET
+- TWITTER_CONSUMER_KEY=...
+- TWITTER_CONSUMER_SECRET=...
+- TWITTER_ACCESS_TOKEN=...
+- TWITTER_ACCESS_TOKEN_SECRET=...
+- NEWS_API_TOKEN=...
 
-This gets used by the Twitter library `Twit`.
+This gets used by the Twitter library `Twit`. 
+
+You can get the NEWS_API_TOKEN by registering for NewsAPI [here, it's free!](https://newsapi.org/account)  Get the rest [over at the Twitter Developer website, also free](https://developer.twitter.com/).
+
 
 ## Usage
 
