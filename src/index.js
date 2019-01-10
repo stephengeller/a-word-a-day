@@ -1,7 +1,7 @@
 const Twit = require("twit");
 require("dotenv").config();
 const getNewsArticles = require("./newsApi");
-const { createWordDefinitionTweet } = require("./articleFunctions");
+const { getWordAndDefinition } = require("./articleFunctions");
 
 const MAX_TWEET_LENGTH = 280;
 
@@ -42,6 +42,10 @@ function getDateAndTime() {
   return `${date} ${time}`;
 }
 
+function shortenTweet(tweetString) {
+  return tweetString.substring(0, MAX_TWEET_LENGTH - 5) + "...";
+}
+
 exports.handler = async function(
   event,
   context,
@@ -50,12 +54,13 @@ exports.handler = async function(
 ) {
   await getNewsArticles(articles => {
     const dateAndTime = getDateAndTime();
-    createWordDefinitionTweet(articles).then(({ word, definition }) => {
-      let tweetString = `The definiton of [${word}] is: ${definition}`;
-      if (tweetString >= MAX_TWEET_LENGTH) {
-        tweetString = word.substring(0, MAX_TWEET_LENGTH - 5) + "...";
+    return getWordAndDefinition(articles).then(({ word, definition }) => {
+      let tweetString = `The definiton of "${word}" is: ${definition}`;
+      if (tweetString.length >= MAX_TWEET_LENGTH) {
+        console.log(tweetString.length);
+        tweetString = shortenTweet(tweetString);
       }
-      postToTwitter(tweetString, dateAndTime, client);
+      return postToTwitter(tweetString, dateAndTime, client);
     });
   });
 };

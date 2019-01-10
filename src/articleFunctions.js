@@ -31,7 +31,7 @@ function getDefinition(string) {
     });
 }
 
-function createWordDefinitionTweet(articles) {
+function getWordAndDefinition(articles) {
   const randomArticle = randomElementFromArr(articles)["title"];
   let randomWord = "";
   while (randomWord.length < 5) {
@@ -40,6 +40,4 @@ function createWordDefinitionTweet(articles) {
   return getDefinition(randomWord);
 }
 
-module.exports = {
-  createWordDefinitionTweet
-};
+module.exports = { getWordAndDefinition };

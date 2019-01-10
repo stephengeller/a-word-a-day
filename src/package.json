@@ -10,7 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^6.2.0",
-    "newsapi": "^2.4.0",
     "node-fetch": "^2.3.0",
     "twit": "^2.2.11"
   }
