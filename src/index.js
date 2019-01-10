@@ -23,17 +23,22 @@ function createTwitClient() {
 }
 
 const postToTwitter = (message, dateAndTime, client) => {
+  console.log(message);
+  process.exit(1);
   return client.post("statuses/update", { status: message }, (err, data) => {
     if (err) {
       console.log(err);
     } else {
-      const notice =
-        dateAndTime + ": **** " + `"${data.text}"` + " **** was tweeted.";
-      console.log(notice);
-      return notice;
+      return notice(dateAndTime, data);
     }
   });
 };
+
+function notice(dateAndTime, data) {
+  const notice =
+    dateAndTime + ": **** " + `"${data.text}"` + " **** was tweeted.";
+  return console.log(notice);
+}
 
 function getDateAndTime() {
   const d = new Date();
@@ -54,13 +59,17 @@ exports.handler = async function(
 ) {
   await getNewsArticles(articles => {
     const dateAndTime = getDateAndTime();
-    return getWordAndDefinition(articles).then(({ word, definition }) => {
-      let tweetString = `The definiton of "${word}" is: ${definition}`;
-      if (tweetString.length >= MAX_TWEET_LENGTH) {
-        console.log(tweetString.length);
-        tweetString = shortenTweet(tweetString);
-      }
-      return postToTwitter(tweetString, dateAndTime, client);
-    });
+    return getWordAndDefinition(articles)
+      .then(({ word, definition, err }) => {
+        let tweetString = `The definition of "${word}" is: ${definition}`;
+
+        if (tweetString.length >= MAX_TWEET_LENGTH) {
+          console.log(tweetString.length);
+          tweetString = shortenTweet(tweetString);
+        }
+
+        return postToTwitter(tweetString, dateAndTime, client);
+      })
+      .catch(err => console.log(err));
   });
 };

@@ -1,5 +1,5 @@
 require("dotenv").config();
-const fetch = require("node-fetch");
+const axios = require("axios");
 
 const apiKey = process.env.NEWS_API_KEY;
 
@@ -9,13 +9,13 @@ async function getNewsArticles(callback) {
     "https://newsapi.org/v2/top-headlines?" +
     `country=${country}&` +
     `apiKey=${apiKey}`;
-  await fetch(url)
-    .then(response => response.json())
+  await axios
+    .get(url)
     .then(async res => {
-      return await callback(res["articles"]);
+      return await callback(res.data["articles"]);
     })
     .catch(err => {
-      throw new Error(err);
+      console.log(err);
     });
 }
 
