@@ -1,7 +1,7 @@
 require("dotenv").config();
 const apiKey = process.env.NEWS_API_KEY;
 
-const NewsAPI = require("newsApi");
+const NewsAPI = require("newsapi");
 const newsapi = new NewsAPI(apiKey);
 
 function getNewsArticles(callback) {
